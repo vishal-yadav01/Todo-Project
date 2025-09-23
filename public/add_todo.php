@@ -121,14 +121,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php endif; ?>
 
 <form method="post">
-    <input 
-        type="text" 
-        name="title" 
-        value="<?= htmlspecialchars($todo->title ?? '') ?>" 
-        placeholder="Enter todo title" 
-        required 
-        <?= ($todo === null && $id) ? 'readonly' : '' ?>
-    >
+   <input 
+    type="text" 
+    name="title" 
+    value="<?= htmlspecialchars($todo->title ?? '') ?>" 
+    placeholder="Enter todo title" 
+    required
+>
+
     <button type="submit"><?= $id ? 'Update' : 'Add' ?></button>
 </form>
 

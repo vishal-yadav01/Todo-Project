@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../autoload.php";
+use App\Database\DB;
 session_start();
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
@@ -8,28 +10,37 @@ if (isset($_SESSION['user_id'])) {
 $msg = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $name = trim($_POST['name']);
-  $email = trim($_POST['email']);
-  $pass = $_POST['password'];
+    $name  = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $pass  = $_POST['password'];
 
-  if (strlen($name) < 3) {
-    $msg = "Name must be at least 3 characters.";
-  } elseif (strlen($pass) < 6) {
-    $msg = "Password must be at least 6 characters.";
-  } else {
-    $hash = password_hash($pass, PASSWORD_DEFAULT);
-    $db = new mysqli("localhost", "root", "", "todo_app");
-
-    $st = $db->prepare("INSERT INTO users(name,email,password) VALUES(?,?,?)");
-    $st->bind_param("sss", $name, $email, $hash);
-
-    if ($st->execute()) {
-      header("Location: login.php");
-      exit;
+    if (strlen($name) < 3) {
+        $msg = "Name must be at least 3 characters.";
+    } elseif (strlen($pass) < 6) {
+        $msg = "Password must be at least 6 characters.";
     } else {
-      $msg = "Failed (maybe duplicate email)";
+        $hash = password_hash($pass, PASSWORD_DEFAULT);
+        $db = DB::get();
+
+        $check = $db->prepare("SELECT id FROM users WHERE email=?");
+        $check->bind_param("s", $email);
+        $check->execute();
+        $check->store_result();
+
+        if ($check->num_rows > 0) {
+            $msg = "Email already registered. Please login.";
+        } else {
+            $st = $db->prepare("INSERT INTO users(name,email,password) VALUES(?,?,?)");
+            $st->bind_param("sss", $name, $email, $hash);
+
+            if ($st->execute()) {
+                header("Location: login.php");
+                exit;
+            } else {
+                $msg = "Something went wrong, try again.";
+            }
+        }
     }
-  }
 }
 ?>
 <!doctype html>

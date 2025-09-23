@@ -2,10 +2,10 @@
 namespace App\Model;
 
 class Todo {
-    public ?int $id;
-    public int $user_id;
-    public string $title;
-    public int $is_done;
+    public  $id;
+    public  $user_id;
+    public  $title;
+    public  $is_done;
 
     public function __construct(array $data=[]){
         $this->id = $data['id'] ?? null;
