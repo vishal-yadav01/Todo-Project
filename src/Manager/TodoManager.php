@@ -56,3 +56,4 @@ class TodoManager {
 
     
 }
+// <!-- “The TodoManager class is responsible for all database operations related to todos. It abstracts away SQL queries from the main application logic.” -->
